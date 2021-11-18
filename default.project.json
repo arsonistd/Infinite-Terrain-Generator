@@ -1,0 +1,52 @@
+{
+  "name": "INFINITE-TERRAIN-GENERATOR",
+  "tree": {
+    "$className": "DataModel",
+    
+    "Players": {
+      "$className": "Players"
+    },
+
+    "ReplicatedFirst": {
+      "$className": "ReplicatedFirst",
+      "$path": "src/ReplicatedFirst"
+    },
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared":{
+        "$path": "src/Shared"
+      }
+    },
+    
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "Infinite-Terrain-Plugin":{
+        "$className": "Model",
+        "$path": "src/Plugin"
+      }
+    },
+
+
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server":{
+        "$className": "Folder",
+        "$path": "src/Server"
+      }
+    },
+
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Client":{
+          "$className": "Folder",
+          "$path": "src/Client"
+        }
+      },
+      "$ignoreUnknownInstances": true
+    }
+    
+  }
+}
