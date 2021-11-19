@@ -4,23 +4,25 @@ local G = require(root.G)
 local slider = {}
 slider.__index = slider
 
-slider.New = function(label, parent, data)
+slider.New = function(label, parent, min, max, default, doRound)
 	local self = setmetatable({}, slider)
 	
 	self.data = data
+	self.min = min or 0
+	self.max = max or 10
+	self.doRound = doRound or false
+	self.default = default or 1
 	
 	self.gui = Instance.new("Frame")
 	self.gui.Size = UDim2.new(1, 0, 0, 24)
 	self.gui.BackgroundTransparency = 1
 	self.gui.BorderSizePixel = 0
-	
-	-- Arg 2
 	if parent then
 		self.gui.Parent = parent
 	end
 	
-	local listLayout = Instance.new("UIListLayout")
-	listLayout.Parent = self.gui
+	--local listLayout = Instance.new("UIListLayout")
+	--listLayout.Parent = self.gui
 	
 	local nameLabel = Instance.new("TextLabel")
 	nameLabel.Text = label or ""
@@ -79,11 +81,25 @@ slider.New = function(label, parent, data)
 	return self
 end
 
-slider:Set = function(self, value)
+slider:Set = function(value)
+	local spring = self._spring
+	local min = self.min
+	local max = self.max
+	local round = self.doRound
+	local newT = math.clamp(value, 0, 1)
+	
 	if self.value == value then return end
-	if self.data.minimum then value = math.max(value, self.data.minimum) end
-	if self.data.maximum then value = math.min(value, self.data.maximum) end
-	if self.data.round then value = G.modules["Functions"].Round(value, self.data.round) end
+	if self.data.minimum then value = math.max(value, min) end
+	if self.data.maximum then value = math.min(value, max) end
+	if round then value = G.modules["Functions"].Round(value, self.data.round) end
+	
+	if (self.Interval > 0) then
+		newT = math.floor((newT / self.Interval) + 0.5) * self.Interval
+	end
+	
+	spring.t = newT
+	spring.instant = not doTween
+	
 end
 
 slider:Destroy = function()
