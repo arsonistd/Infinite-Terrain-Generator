@@ -2,22 +2,22 @@ local Maid = {}
 Maid.__index = Maid
 
 function Maid.New()
-	return setmetatable({}, {self._objs})
+	return setmetatable({}, Maid)
 end
 
 function Maid:Add(obj)
-  self._objs[#self.objs+1] = obj
+  self[#self+1] = obj
 end
 
 function Maid:Clean()
-	for i,v in pairs(self.objs) do
-		if type(v) = "RBXScriptConnection" then
+	for i,v in pairs(self) do
+		if typeof(v) == "RBXScriptConnection" then
 			v:Disconnect()
-		elseif type(v) = "function" then
+		elseif type(v) == "function" then
 			v()
 		elseif v.Destroy then
 			v:Destroy()
-		elseif type(v) == "Table" then
+		elseif typeof(v) == "table" then
 			for _, cleanupMethod in ipairs({"destroy", "Destroy", "Disconnect"}) do
 				if table[cleanupMethod] then
 					table[cleanupMethod]()

@@ -9,27 +9,24 @@ local positionZ = math.huge
 local strength = 1
 local size = 4
 
-module.Initiate = function()
+module.Start = function()
 	local mouse = G.plugin:GetMouse()
-	local connection1 = nil
-	local connection2 = nil
-	local connection3 = nil
 	
 	local widgetButton = G.classes["WidgetButton"].New("Edit", "rbxassetid://3079003835", 2)
 	local widgetPage = G.classes["WidgetPage"].New()
+	local maid = G.classes["Maid"].New()
 	
-	local dataGroup = G.classes["Group"].New("Data")
-	widgetPage:AddChild(dataGroup.gui)
+	local brushSettingsGroup = G.classes["Group"].New("Brush Settings", widgetPage.scrollingFrame)
 
-	local strengthOption = G.classes["Number"].New("Strength", strength, {["round"] = 1})
-	dataGroup:AddChild(strengthOption.gui)
-	strengthOption.event:Bind(function(value)
+	local brushStrengthOption = G.classes["Number"].New("Brush Strength", strength, {["round"] = 1})
+	brushSettingsGroup:AddChild(brushStrengthOption.gui)
+	brushStrengthOption.event:Bind(function(value)
 		strength = value
 	end)
 
-	local sizeOption = G.classes["Number"].New("Size", size, {["minimum"] = 0, ["round"] = 0})
-	dataGroup:AddChild(sizeOption.gui)
-	sizeOption.event:Bind(function(value)
+	local brushSizeOption = G.classes["Number"].New("Brush Size", size, {["minimum"] = 0, ["round"] = 0})
+	brushSettingsGroup:AddChild(brushSizeOption.gui)
+	brushSizeOption.event:Bind(function(value)
 		size = value
 	end)
 
@@ -151,7 +148,7 @@ module.Initiate = function()
 	
 	widgetButton.selected:Bind(function()
 		G.plugin:Activate(true)
-		connection1 = mouse.Button1Down:Connect(function()
+		maid:Add(mouse.Button1Down:Connect(function()
 			if mouse.Target == nil then return end
 			local x = math.floor(mouse.Hit.Position.X / 4)
 			local z = math.floor(mouse.Hit.Position.Z / 4)
@@ -192,29 +189,27 @@ module.Initiate = function()
 					G.modules["Terrain"].Increase(x, z, size, strength)
 				end
 			end)
-		end)
-		connection2 = mouse.WheelBackward:Connect(function()
+		end))
+		maid:Add(mouse.WheelBackward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftShift) == true then
-				strengthOption:Set(strength - 0.1)
+				brushStrengthOption:Set(strength - 0.1)
 			end
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
-				sizeOption:Set(size - 1)
+				brushSizeOption:Set(size - 1)
 			end
-		end)
-		connection3 = mouse.WheelForward:Connect(function()
+		end))
+		maid:Add(mouse.WheelForward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftShift) == true then
-				strengthOption:Set(strength + 0.1)
+				brushStrengthOption:Set(strength + 0.1)
 			end
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
-				sizeOption:Set(size + 1)
+				brushSizeOption:Set(size + 1)
 			end
-		end)
+		end))
 	end)
 	
 	widgetButton.deselected:Bind(function()
-		if connection1 ~= nil then connection1:Disconnect() connection1 = nil end
-		if connection2 ~= nil then connection2:Disconnect() connection2 = nil end
-		if connection3 ~= nil then connection3:Disconnect() connection3 = nil end
+		maid:Destroy()
 	end)
 end
 

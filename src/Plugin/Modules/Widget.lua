@@ -3,7 +3,7 @@ local G = require(root.G)
 
 local module = {}
 
-module.Initialise = function()
+module.Init = function()
 	local toolbar = G.plugin:CreateToolbar("Terrain")
 	local button = toolbar:CreateButton("Infinite Terrain", "Create and edit terrain", "rbxassetid://7588761139")
 	local widgetInfo = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 200, 300, 150, 150)

@@ -3,13 +3,18 @@ module.__index = module
 
 local showing = nil
 
-module.New = function(label)
+module.New = function(label, parent)
 	local object = setmetatable({}, module)
 	
 	object.gui = Instance.new("Frame")
 	object.gui.Size = UDim2.new(1, 0, 0, 0)
 	object.gui.BackgroundTransparency = 1
 	object.gui.BorderSizePixel = 0
+
+	-- Parent arg
+	if parent then
+		object.gui.Parent = parent
+	end
 	
 	local padding = Instance.new("UIPadding")
 	padding.PaddingLeft = UDim.new(0, 1)

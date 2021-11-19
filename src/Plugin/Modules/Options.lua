@@ -134,7 +134,7 @@ ClearModels = function()
 	G.modules["Terrain"].models = {}
 end
 
-module.Initiate = function()
+module.Start = function()
 	local widgetButton = G.classes["WidgetButton"].New("Terrain", "rbxassetid://7588761139", 1)
 	local widgetPage = G.classes["WidgetPage"].New()
 	widgetButton:Select()

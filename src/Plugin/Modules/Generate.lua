@@ -8,14 +8,12 @@ local positionX = math.huge
 local positionZ = math.huge
 local size = 4
 
-module.Initiate = function()
+module.Start = function()
 	local mouse = G.plugin:GetMouse()
-	local connection1 = nil
-	local connection2 = nil
-	local connection3 = nil
 	
 	local widgetButton = G.classes["WidgetButton"].New("Generate", "rbxassetid://7249080767", 4)
 	local widgetPage = G.classes["WidgetPage"].New()
+	local maid = G.classes["Maid"].New()
 	
 	local dataGroup = G.classes["Group"].New("Data")
 	widgetPage:AddChild(dataGroup.gui)
@@ -139,7 +137,7 @@ module.Initiate = function()
 	
 	widgetButton.selected:Bind(function()
 		G.plugin:Activate(true)
-		connection1 = mouse.Button1Down:Connect(function()
+		maid:Add(mouse.Button1Down:Connect(function()
 			if mouse.Target == nil then return end
 			local x = math.floor(mouse.Hit.Position.X / 4)
 			local z = math.floor(mouse.Hit.Position.Z / 4)
@@ -149,13 +147,11 @@ module.Initiate = function()
 			else
 				G.modules["Terrain"].Generate(x, z, size, true)
 			end
-			local connectionUp = nil
-			local connectionMove = nil
-			connectionUp = mouse.Button1Up:Connect(function()
-				connectionUp:Disconnect()
-				connectionMove:Disconnect()
-			end)
-			connectionMove = mouse.Move:Connect(function()
+			local moveMaid = G.classes["Maid"].New()
+			moveMaid:Add(mouse.Button1Up:Connect(function()
+				moveMaid:Clean()
+			end))
+			moveMaid:Add(mouse.Move:Connect(function()
 				if mouse.Target == nil then return end
 				local x = math.floor(mouse.Hit.Position.X / 4)
 				local z = math.floor(mouse.Hit.Position.Z / 4)
@@ -166,24 +162,22 @@ module.Initiate = function()
 				else
 					G.modules["Terrain"].Generate(x, z, size, true)
 				end
-			end)
-		end)
-		connection2 = mouse.WheelBackward:Connect(function()
+			end))
+		end))
+		maid:Add(mouse.WheelBackward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
 				sizeOption:Set(size - 1)
 			end
-		end)
-		connection3 = mouse.WheelForward:Connect(function()
+		end))
+		maid:Add(mouse.WheelForward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
 				sizeOption:Set(size + 1)
 			end
-		end)
+		end))
 	end)
 	
 	widgetButton.deselected:Bind(function()
-		if connection1 ~= nil then connection1:Disconnect() connection1 = nil end
-		if connection2 ~= nil then connection2:Disconnect() connection2 = nil end
-		if connection3 ~= nil then connection3:Disconnect() connection3 = nil end
+		maid:Clean()
 	end)
 end
 

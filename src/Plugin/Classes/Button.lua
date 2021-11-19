@@ -4,7 +4,7 @@ local G = require(root.G)
 local module = {}
 module.__index = module
 
-module.New = function(label)
+module.New = function(label, parent)
 	local object = setmetatable({}, module)
 	
 	object.event = G.classes["Event"].New()
@@ -13,6 +13,11 @@ module.New = function(label)
 	object.gui.Size = UDim2.new(1, 0, 0, 42)
 	object.gui.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
 	object.gui.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+
+	-- parent arg
+	if parent then
+		object.gui.Parent = parent
+	end
 	
 	local textButton = Instance.new("TextButton")
 	textButton.Text = label

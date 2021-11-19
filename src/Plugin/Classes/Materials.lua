@@ -12,9 +12,37 @@ module.New = function(value)
 	object.selected = value or ""
 	
 	object.gui = Instance.new("Frame")
-	object.gui.Size = UDim2.new(1, 0, 0, 184)
-	object.gui.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
-	object.gui.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	object.gui.Size = UDim2.new(1, 0, 0, 208)-- 184
+	object.gui.Position = UDim2.new(0, 0, 0, 0)
+	object.gui.BackgroundTransparency = 1
+
+	local listLayout = Instance.new("UIListLayout")
+	listLayout.Parent = object.gui
+	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+	local materialTitleFrame = Instance.new("Frame")
+	materialTitleFrame.BackgroundTransparency = 1
+	materialTitleFrame.Size = UDim2.new(1, 0, 0, 24)
+	materialTitleFrame.Parent = object.gui
+
+	local materialTitle = Instance.new("TextLabel")
+	materialTitle.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
+	materialTitle.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	materialTitle.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
+	materialTitle.Size = UDim2.new(0, 120, 1, 0)
+	materialTitle.Text = "Brush Material"
+	materialTitle.Font = Enum.Font.Arial
+	materialTitle.TextSize = 12
+	materialTitle.LayoutOrder = 1
+	materialTitle.Parent = materialTitleFrame
+	
+	local materialFrame = Instance.new("Frame")
+	materialFrame.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
+	materialFrame.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	materialFrame.Size = UDim2.new(1, 0, 0, 184)
+	materialFrame.Parent = object.gui
+	materialFrame.LayoutOrder = 2
 	
 	local padding = Instance.new("UIPadding")
 	padding.PaddingBottom = UDim.new(0, 8)
@@ -22,12 +50,20 @@ module.New = function(value)
 	padding.PaddingRight = UDim.new(0, 0)
 	padding.PaddingTop = UDim.new(0, 8)
 	padding.Parent = object.gui
+
+	local materialPadding = Instance.new("UIPadding")
+	materialPadding.PaddingBottom = UDim.new(0, 8)
+	materialPadding.PaddingLeft = UDim.new(0, 8)
+	materialPadding.PaddingRight = UDim.new(0, 0)
+	materialPadding.PaddingTop = UDim.new(0, 8)
+	materialPadding.Parent = materialFrame
 	
 	local gridLayout = Instance.new("UIGridLayout")
 	gridLayout.CellSize = UDim2.new(0.125, -8, 0, 50)
 	gridLayout.CellPadding = UDim2.new(0, 8, 0, 8)
 	gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	gridLayout.Parent = object.gui
+	gridLayout.Parent = materialFrame
+	gridLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
 	
 	
 	object.imageButtons = {}
@@ -44,7 +80,7 @@ module.New = function(value)
 			imageButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ButtonBorder)
 		end
 		
-		imageButton.Parent = object.gui
+		imageButton.Parent = materialFrame
 				
 		imageButton.MouseEnter:Connect(function()
 			if object.selected == (material[1] or "") then return end

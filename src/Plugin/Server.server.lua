@@ -15,8 +15,8 @@ for i, descendant in ipairs(script.Parent:GetDescendants()) do
 	end
 end
 for i, module in pairs(G.modules) do
-	if module.Initialise then module.Initialise() end
+	if module.Init then module.Init() end
 end
 for i, module in pairs(G.modules) do
-	if module.Initiate then module.Initiate() end
+	if module.Start then module.Start() end
 end
