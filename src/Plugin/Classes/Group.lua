@@ -3,6 +3,9 @@ module.__index = module
 
 local showing = nil
 
+local openImage = "rbxassetid://8057404440"
+local closeImage = "rbxassetid://8057404581"
+
 module.New = function(label, parent)
 	local object = setmetatable({}, module)
 	
@@ -39,6 +42,16 @@ module.New = function(label, parent)
 	textButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
 	textButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
 	textButton.Parent = object.gui
+
+	object.collapseIcon = Instance.new("ImageLabel")
+	object.collapseIcon.Size = UDim2.new(1, 0, 1, 0)
+	object.collapseIcon.BackgroundTransparency = 1
+	object.collapseIcon.Image = closeImage
+	object.collapseIcon.ImageColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
+	object.collapseIcon.Parent = textButton
+
+	local aspectRatio = Instance.new("UIAspectRatioConstraint")
+	aspectRatio.Parent = object.collapseIcon
 	
 	object.frame = Instance.new("Frame")
 	object.frame.Size = UDim2.new(1, 0, 0, 0)
@@ -58,25 +71,39 @@ module.New = function(label, parent)
 		textButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.CategoryItem, Enum.StudioStyleGuideModifier.Hover)
 		textButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Hover)
 		textButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
+
+		object.collapseIcon.ImageColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
 	end)
 	textButton.MouseLeave:Connect(function()
 		textButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.CategoryItem, Enum.StudioStyleGuideModifier.Default)
 		textButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Default)
 		textButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Default)
+
+		object.collapseIcon.ImageColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Default)
 	end)
 	textButton.MouseButton1Down:Connect(function()
 		textButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.CategoryItem, Enum.StudioStyleGuideModifier.Pressed)
 		textButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Pressed)
 		textButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Pressed)
+
+		object.collapseIcon.ImageColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Pressed)
 	end)
 	textButton.MouseButton1Up:Connect(function()
 		textButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.CategoryItem, Enum.StudioStyleGuideModifier.Hover)
 		textButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Hover)
 		textButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
+
+		object.collapseIcon.ImageColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
 	end)
+
 	
 	textButton.Activated:Connect(function()
 		object.frame.Visible = not object.frame.Visible
+		if object.collapseIcon.Image == closeImage then
+			object.collapseIcon.Image = openImage
+		else
+			object.collapseIcon.Image = closeImage
+		end
 	end)
 	
 	return object
