@@ -19,19 +19,18 @@ module.Start = function()
 	local brushGroup = G.classes["Group"].New("Brush Settings")
 	widgetPage:AddChild(brushGroup.gui)
 	
-	local brushSizeOption = G.classes["Number"].New("Brush Size", size, {["minimum"] = 0, ["round"] = 0})
-	brushGroup:AddChild(brushSizeOption.gui)
-	brushSizeOption.event:Bind(function(value)
-		size = value
-	end)
-
 	local materialsOption = G.classes["Materials"].New(material)
 	brushGroup:AddChild(materialsOption.gui)
 	materialsOption.event:Bind(function(value)
 		material = value
 		materialsOption:Select(value)
 	end)
-	
+
+	local brushSizeOption = G.classes["Number"].New("Brush Size", size, {["minimum"] = 0, ["round"] = 0})
+	brushGroup:AddChild(brushSizeOption.gui)
+	brushSizeOption.event:Bind(function(value)
+		size = value
+	end)
 	
 	local functionsGroup = G.classes["Group"].New("Functions")
 	widgetPage:AddChild(functionsGroup.gui)
