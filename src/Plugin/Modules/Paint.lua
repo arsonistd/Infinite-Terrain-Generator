@@ -16,9 +16,8 @@ module.Start = function()
 	local widgetPage = G.classes["WidgetPage"].New()
 	local maid = G.classes["Maid"].New()
 	
-	local brushGroup = G.classes["Group"].New("Brush Settings")
-	widgetPage:AddChild(brushGroup.gui)
-	
+	local brushGroup = G.classes["Group"].New("Brush Settings", widgetPage.scrollingFrame)
+
 	local materialsOption = G.classes["Materials"].New(material)
 	brushGroup:AddChild(materialsOption.gui)
 	materialsOption.event:Bind(function(value)
@@ -31,6 +30,8 @@ module.Start = function()
 	brushSizeOption.event:Bind(function(value)
 		size = value
 	end)
+
+	local brushSizeSlider = G.classes["Slider"].new("Brush Size", brushGroup.gui, 1, 60, 1, true)
 	
 	local functionsGroup = G.classes["Group"].New("Functions")
 	widgetPage:AddChild(functionsGroup.gui)
