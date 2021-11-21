@@ -10,7 +10,7 @@ function Maid:Add(obj)
 end
 
 function Maid:Clean()
-	for i,v in pairs(self) do
+	for i,v in ipairs(self) do
 		if typeof(v) == "RBXScriptConnection" then
 			v:Disconnect()
 		elseif type(v) == "function" then
