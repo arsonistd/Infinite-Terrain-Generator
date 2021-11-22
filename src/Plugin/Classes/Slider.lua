@@ -13,21 +13,21 @@ function Slider.new(label, parent, min, max, default, doRound)
 
 	self.event = G.classes["Event"].New()
 
-    self.label = label or ""
-    self.parent = parent
-    self.min = min or 1
+	self.label = label or ""
+	self.parent = parent
+	self.min = min or 1
 	self.max = max or 60
 	self.doRound = doRound or false
 	self.default = default or 1
 
 	self.mouseBtnPressed = false
 
-    self.gui = Instance.new("Frame")
-    self.nameLabel = Instance.new("TextLabel")
-    self.sliderFrame = Instance.new("Frame")
+	self.gui = Instance.new("Frame")
+	self.nameLabel = Instance.new("TextLabel")
+	self.sliderFrame = Instance.new("Frame")
 	self.sliderLine = Instance.new("Frame")
 	self.sliderDragger = Instance.new("TextButton")
-    self.textBox = Instance.new("TextBox")
+	self.textBox = Instance.new("TextBox")
 
 	self.textBox.MouseEnter:Connect(function()
 		self.textBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Hover)
@@ -40,9 +40,9 @@ function Slider.new(label, parent, min, max, default, doRound)
 		self.textBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Default)
 	end)
 
-    self:Init()
+	self:Init()
 
-    return self
+	return self
 end
 
 function Slider:Init()
@@ -52,8 +52,8 @@ function Slider:Init()
 	if self.parent then
 		self.gui.Parent = self.parent
 	end
-
-    self.nameLabel.Text = self.label
+ 
+	self.nameLabel.Text = self.label
 	self.nameLabel.Font = Enum.Font.Arial
 	self.nameLabel.TextSize = 12
 	self.nameLabel.Position = UDim2.new(0, 0, 0, 0)
@@ -87,7 +87,7 @@ function Slider:Init()
 	self.sliderDragger.AutoButtonColor = false
 	self.sliderDragger.Parent = self.sliderLine
 
-    self.textBox.Text = self.default
+	self.textBox.Text = self.default
 	self.textBox.Font = Enum.Font.Arial
 	self.textBox.TextSize = 12
 	self.textBox.Position = UDim2.new(1, 0, 0, 0)
