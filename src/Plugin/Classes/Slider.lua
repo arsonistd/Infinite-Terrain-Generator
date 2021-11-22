@@ -130,15 +130,17 @@ function Slider:Init()
 				detectMouseMoving = game:GetService("RunService").Heartbeat:Connect(function()
 					if self.mouseBtnPressed then
 						local mousePos = input.Position.X
-						local frameSize = self.sliderFrame.AbsoluteSize.X--+(self.sliderDragger.AbsoluteSize.X/2)
-						local framePosition = self.sliderFrame.AbsolutePosition.X--+(self.sliderDragger.AbsoluteSize.X)
+						local sliderLine = self.sliderLine
+						local sliderDragger = self.sliderDragger
+						local frameSize = sliderLine.AbsoluteSize.X-- + (sliderLine.AbsoluteSize.X/2)
+						local framePosition = sliderLine.AbsolutePosition.X-- + (sliderLine.AbsoluteSize.X)
 
-						local mouseMagnitudeFromDragger = mousePos-self.sliderDragger.AbsolutePosition.X
+						local mouseMagnitudeFromDragger = mousePos - sliderDragger.AbsolutePosition.X
 						
 
-						local xOffset = mousePos-framePosition
-						local clampedXOffset = math.clamp(xOffset, 0, self.sliderFrame.AbsoluteSize.X) -- Makes sure the dragger doesnt fall off the sliderFrame
-						local xScalePos = (clampedXOffset)/frameSize
+						local xOffset = mousePos - framePosition
+						local clampedXOffset = math.clamp(xOffset, 0, frameSize) -- Makes sure the dragger doesnt fall off the sliderFrame
+						local xScalePos = (clampedXOffset) / frameSize
 						print(xOffset)
 
 						self:_set("sliderDrag", xScalePos)
@@ -186,9 +188,11 @@ function Slider:_set(type, value)
 		elseif value == 1 then
 			textBoxValue = maxValue
 		else
-			textBoxValue = math.floor((scalePos*maxValue)+0.5)
+			textBoxValue = math.floor((scalePos * maxValue) + 0.5)
 		end
 		self.textBox.Text = textBoxValue
+	elseif type = "sliderClick" then
+		
 	end
 	self.sliderDragger.Position = UDim2.new(scalePos, 0, 0.5, 0)
 end
