@@ -4,9 +4,14 @@ local G = require(root.G)
 local Slider = {}
 Slider.__index = Slider
 
+local UserInputService = game:GetService("UserInputService")
 
 function Slider.new(label, parent, min, max, default, doRound)
     local self = setmetatable({}, Slider)
+
+	self._maid = G.classes["Maid"].New()
+
+	self.event = G.classes["Event"].New()
 
     self.label = label or ""
     self.parent = parent
@@ -15,9 +20,13 @@ function Slider.new(label, parent, min, max, default, doRound)
 	self.doRound = doRound or false
 	self.default = default or 1
 
+	self.mouseBtnPressed = false
+
     self.gui = Instance.new("Frame")
     self.nameLabel = Instance.new("TextLabel")
     self.sliderFrame = Instance.new("Frame")
+	self.sliderLine = Instance.new("Frame")
+	self.sliderDragger = Instance.new("TextButton")
     self.textBox = Instance.new("TextBox")
 
 	self.textBox.MouseEnter:Connect(function()
@@ -57,10 +66,26 @@ function Slider:Init()
 
 	self.sliderFrame.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
 	self.sliderFrame.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
-	self.sliderFrame.Position = UDim2.new(0, 120, 0, 0)
+	self.sliderFrame.Position = UDim2.new(0, 121, 0, 0)
 	self.sliderFrame.Size = UDim2.new(1, -121, 1, 0)
 	self.sliderFrame.LayoutOrder = 2
 	self.sliderFrame.Parent = self.gui
+
+	self.sliderLine.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBarBackground)
+	self.sliderLine.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	self.sliderLine.Size = UDim2.new(1, -60, 0, 2)
+	self.sliderLine.Position = UDim2.new(0, 10, 0.5, 0)
+	self.sliderLine.AnchorPoint = Vector2.new(0, 0.5)
+	self.sliderLine.Parent = self.sliderFrame
+
+	self.sliderDragger.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBar)
+	self.sliderDragger.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	self.sliderDragger.Size = UDim2.new(0, 6, 0, 18)
+	self.sliderDragger.Position = UDim2.new(0, 0, 0.5, 0)
+	self.sliderDragger.AnchorPoint = Vector2.new(0.5, 0.5)
+	self.sliderDragger.Text = ""
+	self.sliderDragger.AutoButtonColor = false
+	self.sliderDragger.Parent = self.sliderLine
 
     self.textBox.Text = self.default
 	self.textBox.Font = Enum.Font.Arial
@@ -74,11 +99,103 @@ function Slider:Init()
 	self.textBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
 	self.textBox.LayoutOrder = 3
 	self.textBox.Parent = self.sliderFrame
+
+	self.textBox.MouseEnter:Connect(function()
+		self.textBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Hover)
+		self.textBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Hover)
+		self.textBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
+	end)
+	self.textBox.MouseLeave:Connect(function()
+		self.textBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Default)
+		self.textBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Default)
+		self.textBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Default)
+	end)
+	self.textBox.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
+		local newValue = tonumber(self.textBox.Text) or self.default
+		if self.doRound then newValue = math.floor(newValue+0.5) end
+		if self.min > newValue then newValue = math.clamp(newValue, self.min, math.huge) end
+		self.textBox.Text = newValue
+		self:_set("textBox", self.textBox.Text)
+	end)
+
+
+	local detectMouseMoving
+	self.sliderDragger.InputBegan:Connect(function(input, gameProcessed)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			self.sliderDragger.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBar, Enum.StudioStyleGuideModifier.Pressed)
+			self.mouseBtnPressed = true
+		end
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			if detectMouseMoving == nil then
+				detectMouseMoving = game:GetService("RunService").Heartbeat:Connect(function()
+					if self.mouseBtnPressed then
+						local mousePos = input.Position.X
+						local frameSize = self.sliderFrame.AbsoluteSize.X--+(self.sliderDragger.AbsoluteSize.X/2)
+						local framePosition = self.sliderFrame.AbsolutePosition.X--+(self.sliderDragger.AbsoluteSize.X)
+
+						local mouseMagnitudeFromDragger = mousePos-self.sliderDragger.AbsolutePosition.X
+						
+
+						local xOffset = mousePos-framePosition
+						local clampedXOffset = math.clamp(xOffset, 0, self.sliderFrame.AbsoluteSize.X) -- Makes sure the dragger doesnt fall off the sliderFrame
+						local xScalePos = (clampedXOffset)/frameSize
+						print(xOffset)
+
+						self:_set("sliderDrag", xScalePos)
+					end
+				end)
+			end
+		end
+	end)
+	self.sliderDragger.InputEnded:Connect(function(input, gameProcessed)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			self.sliderDragger.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBar, Enum.StudioStyleGuideModifier.Default)
+			self.mouseBtnPressed = false
+			if detectMouseMoving then
+				detectMouseMoving:Disconnect()
+				detectMouseMoving = nil
+			end
+		end
+	end)
+	self._maid:Add(function()
+		if detectMouseMoving then
+			detectMouseMoving:Disconnect()
+			detectMouseMoving = nil
+		end
+	end)
+end
+
+
+
+function Slider:_set(type, value)
+	local minimumValue = self.min
+	local maxValue = self.max
+
+	local scalePos = 0
+	if type == "textBox" then
+		local newValue = math.clamp(value, minimumValue, maxValue)
+		if newValue == minimumValue then 
+			newValue = 0
+		end
+		scalePos = newValue/maxValue
+	elseif type == "sliderDrag" then
+		scalePos = value
+		local textBoxValue 
+		if value == 0 then
+			textBoxValue = minimumValue
+		elseif value == 1 then
+			textBoxValue = maxValue
+		else
+			textBoxValue = math.floor((scalePos*maxValue)+0.5)
+		end
+		self.textBox.Text = textBoxValue
+	end
+	self.sliderDragger.Position = UDim2.new(scalePos, 0, 0.5, 0)
 end
 
 
 function Slider:Destroy()
-    
+    self._maid:Destroy()
 end
 
 
