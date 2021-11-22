@@ -46,7 +46,7 @@ function Slider.new(label, parent, min, max, default, doRound)
 end
 
 function Slider:Init()
-    self.gui.Size = UDim2.new(1, 0, 0, 24)
+	self.gui.Size = UDim2.new(1, 0, 0, 24)
 	self.gui.BackgroundTransparency = 1
 	self.gui.BorderSizePixel = 0
 	if self.parent then
@@ -163,6 +163,15 @@ function Slider:Init()
 		if detectMouseMoving then
 			detectMouseMoving:Disconnect()
 			detectMouseMoving = nil
+		end
+	end)
+	
+	self.sliderLine.InputBegan:Connect(function(input, gameProcessed)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				local mousePos = input.Position.X
+				local sliderLine = self.sliderLine
+				
+				local 
 		end
 	end)
 end
