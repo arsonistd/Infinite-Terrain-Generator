@@ -4,7 +4,7 @@ local G = require(root.G)
 local module = {}
 module.__index = module
 
-module.New = function(data)
+function module.New(data)
 	local object = setmetatable({}, module)
 	
 	object.event = G.classes["Event"].New()
@@ -200,7 +200,11 @@ module.New = function(data)
 	return object
 end
 
-module.Destroy = function(self)
+function module:Init()
+	
+end
+
+function module:Destroy()
 	self.event:UnBindAll()
 	self.gui:Destroy()
 end
