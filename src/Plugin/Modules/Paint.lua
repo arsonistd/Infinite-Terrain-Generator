@@ -31,7 +31,7 @@ module.Start = function()
 		size = value
 	end)
 
-	local brushSizeSlider = G.classes["Slider"].new("Brush Size", brushGroup.gui, 1, 60, 1, true)
+	local brushSizeSlider = G.classes["Slider"].new("Brush Size", brushGroup.gui, 1, 4, 1, 1)
 	
 	local functionsGroup = G.classes["Group"].New("Functions")
 	widgetPage:AddChild(functionsGroup.gui)
