@@ -6,7 +6,7 @@ Slider.__index = Slider
 
 local UserInputService = game:GetService("UserInputService")
 
-function Slider.new(label, parent, min, max, default, doRound)
+function Slider.new(label, parent, min, max, default, round)
     local self = setmetatable({}, Slider)
 
 	self._maid = G.classes["Maid"].New()
@@ -17,7 +17,7 @@ function Slider.new(label, parent, min, max, default, doRound)
 	self.parent = parent
 	self.min = min or 1
 	self.max = max or 60
-	self.doRound = doRound or false
+	self.round = round or 0
 	self.default = default or 1
 
 	self.mouseBtnPressed = false
@@ -73,7 +73,7 @@ function Slider:Init()
 
 	self.sliderLine.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBarBackground)
 	self.sliderLine.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
-	self.sliderLine.Size = UDim2.new(1, -60, 0, 2)
+	self.sliderLine.Size = UDim2.new(1, -60, 0, 4)
 	self.sliderLine.Position = UDim2.new(0, 10, 0.5, 0)
 	self.sliderLine.AnchorPoint = Vector2.new(0, 0.5)
 	self.sliderLine.Parent = self.sliderFrame
@@ -112,14 +112,28 @@ function Slider:Init()
 	end)
 	self.textBox.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
 		local newValue = tonumber(self.textBox.Text) or self.default
-		if self.doRound then newValue = math.floor(newValue+0.5) end
+		if self.round ~= 0 then newValue = G.modules["Functions"].Round(newValue, self.round) end
 		if self.min > newValue then newValue = math.clamp(newValue, self.min, math.huge) end
 		self.textBox.Text = newValue
 		self:_set("textBox", self.textBox.Text)
 	end)
 
-
 	local detectMouseMoving
+	local function startDetectingMouseMovement(input)
+		detectMouseMoving = game:GetService("RunService").Heartbeat:Connect(function()
+			if self.mouseBtnPressed then
+				local mousePos = input.Position.X
+				local sliderLine = self.sliderLine
+				local frameSize = sliderLine.AbsoluteSize.X-- + (sliderLine.AbsoluteSize.X/2)
+				local framePosition = sliderLine.AbsolutePosition.X-- + (sliderLine.AbsoluteSize.X)
+				local xOffset = mousePos - framePosition
+				local clampedXOffset = math.clamp(xOffset, 0, frameSize) -- Makes sure the dragger doesnt fall off the sliderFrame
+				local xScalePos = (clampedXOffset) / frameSize
+				self:_set("sliderDrag", xScalePos)
+			end
+		end)
+	end
+
 	self.sliderDragger.InputBegan:Connect(function(input, gameProcessed)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			self.sliderDragger.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBar, Enum.StudioStyleGuideModifier.Pressed)
@@ -127,25 +141,7 @@ function Slider:Init()
 		end
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			if detectMouseMoving == nil then
-				detectMouseMoving = game:GetService("RunService").Heartbeat:Connect(function()
-					if self.mouseBtnPressed then
-						local mousePos = input.Position.X
-						local sliderLine = self.sliderLine
-						local sliderDragger = self.sliderDragger
-						local frameSize = sliderLine.AbsoluteSize.X-- + (sliderLine.AbsoluteSize.X/2)
-						local framePosition = sliderLine.AbsolutePosition.X-- + (sliderLine.AbsoluteSize.X)
-
-						local mouseMagnitudeFromDragger = mousePos - sliderDragger.AbsolutePosition.X
-						
-
-						local xOffset = mousePos - framePosition
-						local clampedXOffset = math.clamp(xOffset, 0, frameSize) -- Makes sure the dragger doesnt fall off the sliderFrame
-						local xScalePos = (clampedXOffset) / frameSize
-						print(xOffset)
-
-						self:_set("sliderDrag", xScalePos)
-					end
-				end)
+				startDetectingMouseMovement(input)
 			end
 		end
 	end)
@@ -168,12 +164,27 @@ function Slider:Init()
 	
 	self.sliderLine.InputBegan:Connect(function(input, gameProcessed)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				local mousePos = input.Position.X
-				local sliderLine = self.sliderLine
-				
-				local 
+			self.mouseBtnPressed = true
+			local mousePos = input.Position.X
+			local sliderLine = self.sliderLine
+			local offset = sliderLine.AbsolutePosition.X-mousePos
+			local scale = offset/self.sliderLine.AbsoluteSize.X
+			local xScalePos = math.abs(scale)
+			self:_set("sliderClick", xScalePos)
+			startDetectingMouseMovement(input)
 		end
 	end)
+	self.sliderLine.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			self.mouseBtnPressed = false
+			if detectMouseMoving then
+				detectMouseMoving:Disconnect()
+				detectMouseMoving = nil
+			end
+		end
+	end)
+
+	self:_set("textBox", self.default)
 end
 
 
@@ -182,6 +193,8 @@ function Slider:_set(type, value)
 	local minimumValue = self.min
 	local maxValue = self.max
 
+	if self.round ~= 0 then value = G.modules["Functions"].Round(value, self.round) end
+
 	local scalePos = 0
 	if type == "textBox" then
 		local newValue = math.clamp(value, minimumValue, maxValue)
@@ -189,19 +202,20 @@ function Slider:_set(type, value)
 			newValue = 0
 		end
 		scalePos = newValue/maxValue
-	elseif type == "sliderDrag" then
+	elseif type == "sliderDrag" or "sliderClick" then
 		scalePos = value
+
+
 		local textBoxValue 
-		if value == 0 then
+		if value < 0.01 then
 			textBoxValue = minimumValue
+			value = minimumValue
 		elseif value == 1 then
 			textBoxValue = maxValue
 		else
-			textBoxValue = math.floor((scalePos * maxValue) + 0.5)
+			textBoxValue = value
 		end
 		self.textBox.Text = textBoxValue
-	elseif type = "sliderClick" then
-		
 	end
 	self.sliderDragger.Position = UDim2.new(scalePos, 0, 0.5, 0)
 end
