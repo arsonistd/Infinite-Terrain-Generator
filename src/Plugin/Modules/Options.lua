@@ -200,7 +200,7 @@ module.Start = function()
 	noiseOption.gui.LayoutOrder = 2147483647
 	noisesGroup:AddChild(noiseOption.gui)
 	noiseOption.event:Bind(function()
-		CreateNoise({G.modules["Functions"].Round(math.random(10000, 99999) + math.random(), 3), 50, 0.04, -10, 10})
+		CreateNoise({G.modules["Functions"].Round(math.random(10000, 99999) + math.random(), 3), 50, 0.04, -10, 10, 1})
 	end)
 	
 	materialsGroup = G.classes["Group"].New("Materials")

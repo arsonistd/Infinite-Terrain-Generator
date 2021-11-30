@@ -18,15 +18,13 @@ module.Start = function()
 	
 	local brushSettingsGroup = G.classes["Group"].New("Brush Settings", widgetPage.scrollingFrame)
 
-	local brushStrengthOption = G.classes["Number"].New("Brush Strength", strength, {["round"] = 1})
-	brushSettingsGroup:AddChild(brushStrengthOption.gui)
-	brushStrengthOption.event:Bind(function(value)
-		strength = value
+	local brushStrengthSlider = G.classes["Slider"].New("Brush Strength", brushSettingsGroup.gui, 0.1, 2, 1, 1, true)
+	brushStrengthSlider.event:Bind(function(value)
+		size = value
 	end)
 
-	local brushSizeOption = G.classes["Number"].New("Brush Size", size, {["minimum"] = 0, ["round"] = 0})
-	brushSettingsGroup:AddChild(brushSizeOption.gui)
-	brushSizeOption.event:Bind(function(value)
+	local brushSizeSlider = G.classes["Slider"].New("Brush Size", brushSettingsGroup.gui, 0.5, 10, 1, 1, true)
+	brushSizeSlider.event:Bind(function(value)
 		size = value
 	end)
 
@@ -192,18 +190,18 @@ module.Start = function()
 		end))
 		maid:Add(mouse.WheelBackward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftShift) == true then
-				brushStrengthOption:Set(strength - 0.1)
+				brushStrengthSlider:Increment(-0.1)
 			end
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
-				brushSizeOption:Set(size - 1)
+				brushSizeSlider:Increment(-0.5)
 			end
 		end))
 		maid:Add(mouse.WheelForward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftShift) == true then
-				brushStrengthOption:Set(strength + 0.1)
+				brushStrengthSlider:Increment(0.1)
 			end
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
-				brushSizeOption:Set(size + 1)
+				brushSizeSlider:Increment(0.5)
 			end
 		end))
 	end)

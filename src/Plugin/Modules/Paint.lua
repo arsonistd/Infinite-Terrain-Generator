@@ -18,20 +18,17 @@ module.Start = function()
 	
 	local brushGroup = G.classes["Group"].New("Brush Settings", widgetPage.scrollingFrame)
 
-	local materialsOption = G.classes["Materials"].New(material)
+	local materialsOption = G.classes["MaterialSelection"].New(material)
 	brushGroup:AddChild(materialsOption.gui)
 	materialsOption.event:Bind(function(value)
 		material = value
 		materialsOption:Select(value)
 	end)
 
-	local brushSizeOption = G.classes["Number"].New("Brush Size", size, {["minimum"] = 0, ["round"] = 0})
-	brushGroup:AddChild(brushSizeOption.gui)
-	brushSizeOption.event:Bind(function(value)
+	local brushSizeSlider = G.classes["Slider"].New("Brush Size", brushGroup.gui, 0.5, 10, 1, 1, true)
+	brushSizeSlider.event:Bind(function(value)
 		size = value
 	end)
-
-	local brushSizeSlider = G.classes["Slider"].new("Brush Size", brushGroup.gui, 1, 4, 1, 1)
 	
 	local functionsGroup = G.classes["Group"].New("Functions")
 	widgetPage:AddChild(functionsGroup.gui)
@@ -169,14 +166,15 @@ module.Start = function()
 				G.modules["Terrain"].Paint(x, z, size, material)
 			end))
 		end))
+
 		maid:Add(mouse.WheelBackward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
-				brushSizeOption:Set(size - 1)
+				brushSizeSlider:Increment(-0.5)
 			end
 		end))
 		maid:Add(mouse.WheelForward:Connect(function()
 			if inputService:IsKeyDown(Enum.KeyCode.LeftControl) == true then
-				brushSizeOption:Set(size + 1)
+				brushSizeSlider:Increment(0.5)
 			end
 		end))
 	end)

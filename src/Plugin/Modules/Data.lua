@@ -25,7 +25,14 @@ module.materials = {
 	{1328, "rbxasset://textures/TerrainTools/mtrl_snow.png", "Snow"},
 	{2048, "rbxasset://textures/TerrainTools/mtrl_water.png", "Water"},
 	{528, "rbxasset://textures/TerrainTools/mtrl_woodplanks.png", "Wooden Planks"},
+}
 
+module.noises = {
+	{1, "rbxassetid://8091233742", "Perlin"},
+	{2, "rbxassetid://8091234083", "Fractal"},
+	{3, "rbxassetid://8091248033", "Random"},
+	{4, "rbxassetid://8091248526", "Worley"},
+	{5, "rbxassetid://8092804250", "Simplex"},
 
 }
 

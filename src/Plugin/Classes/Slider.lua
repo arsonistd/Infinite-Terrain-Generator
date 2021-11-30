@@ -4,9 +4,7 @@ local G = require(root.G)
 local Slider = {}
 Slider.__index = Slider
 
-local UserInputService = game:GetService("UserInputService")
-
-function Slider.new(label, parent, min, max, default, round)
+Slider.New = function(label, parent, min, max, default, round, snapping)
     local self = setmetatable({}, Slider)
 
 	self._maid = G.classes["Maid"].New()
@@ -16,9 +14,10 @@ function Slider.new(label, parent, min, max, default, round)
 	self.label = label or ""
 	self.parent = parent
 	self.min = min or 1
-	self.max = max or 60
+	self.max = max or 5
 	self.round = round or 0
 	self.default = default or 1
+	self.snapping = snapping or false
 
 	self.mouseBtnPressed = false
 
@@ -45,7 +44,7 @@ function Slider.new(label, parent, min, max, default, round)
 	return self
 end
 
-function Slider:Init()
+Slider.Init = function(self)
 	self.gui.Size = UDim2.new(1, 0, 0, 24)
 	self.gui.BackgroundTransparency = 1
 	self.gui.BorderSizePixel = 0
@@ -115,7 +114,10 @@ function Slider:Init()
 		if self.round ~= 0 then newValue = G.modules["Functions"].Round(newValue, self.round) end
 		if self.min > newValue then newValue = math.clamp(newValue, self.min, math.huge) end
 		self.textBox.Text = newValue
-		self:_set("textBox", self.textBox.Text)
+
+		local xScalePos = self.textBox.Text/self.max
+		self:Set(xScalePos)
+		self.event:Call(self.textBox.Text)
 	end)
 
 	local detectMouseMoving
@@ -129,7 +131,7 @@ function Slider:Init()
 				local xOffset = mousePos - framePosition
 				local clampedXOffset = math.clamp(xOffset, 0, frameSize) -- Makes sure the dragger doesnt fall off the sliderFrame
 				local xScalePos = (clampedXOffset) / frameSize
-				self:_set("sliderDrag", xScalePos)
+				self:Set(xScalePos)
 			end
 		end)
 	end
@@ -153,6 +155,7 @@ function Slider:Init()
 				detectMouseMoving:Disconnect()
 				detectMouseMoving = nil
 			end
+			self.event:Call(self.textBox.Text)
 		end
 	end)
 	self._maid:Add(function()
@@ -170,7 +173,7 @@ function Slider:Init()
 			local offset = sliderLine.AbsolutePosition.X-mousePos
 			local scale = offset/self.sliderLine.AbsoluteSize.X
 			local xScalePos = math.abs(scale)
-			self:_set("sliderClick", xScalePos)
+			self:Set(xScalePos)
 			startDetectingMouseMovement(input)
 		end
 	end)
@@ -181,47 +184,53 @@ function Slider:Init()
 				detectMouseMoving:Disconnect()
 				detectMouseMoving = nil
 			end
+			self.event:Call(self.textBox.Text)
 		end
 	end)
 
-	self:_set("textBox", self.default)
+	self:Set(math.clamp(self.default/self.max, self.min, self.max))
 end
 
 
 
-function Slider:_set(type, value)
-	local minimumValue = self.min
+Slider.Set = function(self, value)
+	local minValue = self.min
 	local maxValue = self.max
 
-	if self.round ~= 0 then value = G.modules["Functions"].Round(value, self.round) end
+	local decimalValue = G.modules["Functions"].Round(value, 2)
+	local clampedDecimalValue = math.clamp(decimalValue, 0, 1) 
+	local newValue = minValue+(maxValue-minValue)*decimalValue
+	
+	self.value = maxValue*decimalValue
 
-	local scalePos = 0
-	if type == "textBox" then
-		local newValue = math.clamp(value, minimumValue, maxValue)
-		if newValue == minimumValue then 
-			newValue = 0
-		end
-		scalePos = newValue/maxValue
-	elseif type == "sliderDrag" or "sliderClick" then
-		scalePos = value
-
-
-		local textBoxValue 
-		if value < 0.01 then
-			textBoxValue = minimumValue
-			value = minimumValue
-		elseif value == 1 then
-			textBoxValue = maxValue
-		else
-			textBoxValue = value
-		end
-		self.textBox.Text = textBoxValue
+	if self.round ~= nil then newValue = G.modules["Functions"].Round(newValue, self.round) end
+	
+	local sliderScale = clampedDecimalValue
+	if self.snapping then
+		local decimalValue = value
+		local newValue = maxValue*decimalValue
+		local roundedValue = G.modules["Functions"].Round(newValue, self.round)
+		sliderScale = roundedValue/maxValue
 	end
-	self.sliderDragger.Position = UDim2.new(scalePos, 0, 0.5, 0)
+
+	self.sliderDragger.Position = UDim2.new(sliderScale, 0, 0.5, 0)
+	self.textBox.Text = newValue
+end
+
+Slider.Increment = function(self, increment) 
+	local maxValue = self.max
+
+	local newValue = self.value+increment
+	print(newValue)
+	if self.round ~= nil then newValue = G.modules["Functions"].Round(newValue, self.round) end
+	local xScalePos = newValue/maxValue
+	local clampedxScalePosScalePos = math.clamp(xScalePos, 0, 1) 
+
+	self:Set(clampedxScalePosScalePos)
 end
 
 
-function Slider:Destroy()
+Slider.Destroy = function(self)
     self._maid:Destroy()
 end
 

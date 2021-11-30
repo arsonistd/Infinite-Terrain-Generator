@@ -22,6 +22,7 @@ module.New = function()
 	listLayout.Padding = UDim.new(0, 1)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	listLayout.Parent = object.scrollingFrame
+	listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		object.scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
 	end)

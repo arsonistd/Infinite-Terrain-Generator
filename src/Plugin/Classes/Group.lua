@@ -27,6 +27,7 @@ module.New = function(label, parent)
 	local listLayout = Instance.new("UIListLayout")
 	listLayout.Padding = UDim.new(0, 1)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	listLayout.Parent = object.gui
 	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		object.gui.Size = UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y)
