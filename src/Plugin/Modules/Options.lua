@@ -3,13 +3,34 @@ local G = require(root.G)
 
 local module = {}
 
-local noisesGroup = nil
-local materialsGroup = nil
-local modelsGroup = nil
-local noises = {}
-local materials = {}
-local models = {}
 
+-- Biomes 
+local biomes = {}
+local biomesGroup = nil
+CreateBiome = function(data)
+	local biome = G.classes["Biome"].New(data)
+	biomes[#biomes+1] = biome
+	G.modules["Terrain"].biomes[#G.modules["Terrain"].biomes+1] = biome
+	
+	biome.event:Bind(function(event)
+			
+	end
+	
+	return biome
+end
+ClearBiomes = function()
+	for i, object in ipairs(biomes) do
+		object:Destroy()
+	end
+	biomes = {}
+	G.modules["Terrain"].biomes = {}
+end
+
+
+
+-- Noises
+local noises = {}
+local noisesGroup = nil
 CreateNoise = function(data)
 	local noise = G.classes["Noise"].New(data)
 	table.insert(noises, noise)
@@ -42,7 +63,6 @@ CreateNoise = function(data)
 	end)
 	return noise
 end
-
 ClearNoises = function()
 	for i, object in ipairs(noises) do
 		object:Destroy()
@@ -51,6 +71,11 @@ ClearNoises = function()
 	G.modules["Terrain"].noises = {}
 end
 
+
+
+-- Materials
+local materials = {}
+local materialsGroup = nil
 CreateMaterial = function(data)
 	local material = G.classes["Material"].New(data)
 	table.insert(materials, material)
@@ -83,7 +108,6 @@ CreateMaterial = function(data)
 	end)
 	return material
 end
-
 ClearMaterials = function()
 	for i, object in ipairs(materials) do
 		object:Destroy()
@@ -92,6 +116,11 @@ ClearMaterials = function()
 	G.modules["Terrain"].materials = {}
 end
 
+
+
+-- Models
+local models = {}
+local modelsGroup = nil
 CreateModel = function(data)
 	local model = G.classes["Model"].New(data)
 	table.insert(models, model)
@@ -125,7 +154,6 @@ CreateModel = function(data)
 	end)
 	return model
 end
-
 ClearModels = function()
 	for i, object in ipairs(models) do
 		object:Destroy()
@@ -133,6 +161,8 @@ ClearModels = function()
 	models = {}
 	G.modules["Terrain"].models = {}
 end
+
+
 
 module.Start = function()
 	local widgetButton = G.classes["WidgetButton"].New("Terrain", "rbxassetid://7588761139", 1)
@@ -193,9 +223,19 @@ module.Start = function()
 		G.modules["Terrain"].maximumHeight = value
 	end)
 	
+	-- Biomes
+	biomesGroup = G.classes["Group"].New("Noises")
+	widgetPage:AddChild(biomesGroup.gui)
+	local biomeOption = = G.classes["Button"].New("Add Biome")
+	biomeOption.gui.LayoutOrder = 2147483647
+	biomesGroup:AddChild(biomeOption.gui)
+	biomeOption.event:Bind(function()
+				
+	end)
+		
+	-- Noises
 	noisesGroup = G.classes["Group"].New("Noises")
 	widgetPage:AddChild(noisesGroup.gui)
-	
 	local noiseOption = G.classes["Button"].New("Add Noise")
 	noiseOption.gui.LayoutOrder = 2147483647
 	noisesGroup:AddChild(noiseOption.gui)
@@ -203,9 +243,9 @@ module.Start = function()
 		CreateNoise({G.modules["Functions"].Round(math.random(10000, 99999) + math.random(), 3), 50, 0.04, -10, 10, 1})
 	end)
 	
+	-- Materials
 	materialsGroup = G.classes["Group"].New("Materials")
 	widgetPage:AddChild(materialsGroup.gui)
-	
 	local materialOption = G.classes["Button"].New("Add Material")
 	materialOption.gui.LayoutOrder = 2147483647
 	materialsGroup:AddChild(materialOption.gui)
@@ -213,9 +253,9 @@ module.Start = function()
 		CreateMaterial({1376, -10000, 10000, 0, 10000})
 	end)
 	
+	-- Models
 	modelsGroup = G.classes["Group"].New("Models")
 	widgetPage:AddChild(modelsGroup.gui)
-
 	local modelOption = G.classes["Button"].New("Add Model")
 	modelOption.gui.LayoutOrder = 2147483647
 	modelsGroup:AddChild(modelOption.gui)
@@ -226,7 +266,6 @@ module.Start = function()
 	
 	local functionsGroup = G.classes["Group"].New("Functions")
 	widgetPage:AddChild(functionsGroup.gui)
-	
 	local saveOption = G.classes["Button"].New("Save")
 	functionsGroup:AddChild(saveOption.gui)
 	saveOption.event:Bind(function()
