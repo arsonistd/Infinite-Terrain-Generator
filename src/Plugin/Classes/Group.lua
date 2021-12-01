@@ -134,7 +134,7 @@ module.Lock = function(self, reason)
 	end)
 end
 
-module.Unlock = function(self)
+module.Unlock = function(self, reason)
 	for i,v in pairs(self.LockedGuiObjects) do
 		v.Active = true
 	end
