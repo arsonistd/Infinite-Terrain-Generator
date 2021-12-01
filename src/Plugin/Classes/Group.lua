@@ -110,6 +110,40 @@ module.New = function(label, parent)
 	return object
 end
 
+local listConnection = nil
+module.Lock = function(self, reason)
+	self.LockedGuiObjects = {}
+	for i, v in pairs(object.frame:GetDecendants()) do
+		if v:IsA("TextBox") or v:IsA("ImageButton") or v:IsA("TextButton") then
+			if v.Active == true then
+				v.Active = false
+				self.LockedGuiObjects[#self.LockedGuiObjects+1] = v
+			end
+		end
+	end
+	
+	self.reasonText = Instance.new("TextLabel")
+	self.reasonText.Text = reason
+	self.reasonText.Parent = self.gui
+	self.reasonText.BackgroundTransparency = 0.5
+	self.reasonText.Font = Enum.Font.ArialBold
+	self.reasonText.TextSize = 20
+	self.reasonText.BackgroundColor3 = Color3.new(0, 0, 0)
+	listConnection = listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		self.reasonText.Size = UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y)
+	end)
+end
+
+module.Unlock = function(self)
+	for i,v in pairs(self.LockedGuiObjects) do
+		v.Active = true
+	end
+	if listConnection ~= nil then
+		listConnection:Disconnect()
+	end
+	self.reasonText:Destroy()
+end
+
 module.AddChild = function(self, child)
 	child.Parent = self.frame
 end
