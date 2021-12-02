@@ -60,12 +60,12 @@ module.New = function(label, parent)
 	object.frame.BorderSizePixel = 0
 	object.frame.Parent = object.gui
 	
-	local listLayout = Instance.new("UIListLayout")
-	listLayout.Padding = UDim.new(0, 1)
-	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	listLayout.Parent = object.frame
-	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		object.frame.Size = UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y)
+	object.listLayout = Instance.new("UIListLayout")
+	object.listLayout.Padding = UDim.new(0, 1)
+	object.listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	object.listLayout.Parent = object.frame
+	object.listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		object.frame.Size = UDim2.new(1, 0, 0, object.listLayout.AbsoluteContentSize.Y)
 	end)
 	
 	textButton.MouseEnter:Connect(function()
@@ -113,7 +113,7 @@ end
 local listConnection = nil
 module.Lock = function(self, reason)
 	self.LockedGuiObjects = {}
-	for i, v in pairs(object.frame:GetDecendants()) do
+	for i, v in pairs(self.frame:GetDecendants()) do
 		if v:IsA("TextBox") or v:IsA("ImageButton") or v:IsA("TextButton") then
 			if v.Active == true then
 				v.Active = false
@@ -129,8 +129,8 @@ module.Lock = function(self, reason)
 	self.reasonText.Font = Enum.Font.ArialBold
 	self.reasonText.TextSize = 20
 	self.reasonText.BackgroundColor3 = Color3.new(0, 0, 0)
-	listConnection = listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		self.reasonText.Size = UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y)
+	listConnection = self.listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		self.reasonText.Size = UDim2.new(1, 0, 0, self.listLayout.AbsoluteContentSize.Y)
 	end)
 end
 
