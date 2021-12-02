@@ -246,7 +246,7 @@ module.toggleMaterialSettings = function(self)
 		
 		self.settingFrame:Destroy()
 	else
-		self.gui.Size = UDim2.new(1, 0, 0, 144)
+		self.gui.Size = UDim2.new(1, 0, 0, 6*24)
 
 		self.collapseButton.Image = "rbxassetid://8057404581"
 
@@ -264,14 +264,14 @@ module.toggleMaterialSettings = function(self)
 		end)
 		self.settingsMaterial.openEvent:Bind(function(value)
 			if value == true then
-				self.gui.Size = UDim2.new(1, -10, 0, 144+174+24)
+				self.gui.Size = UDim2.new(1, -10, 0, 6*24+184)
 
-				self.settingsMinHeight.gui.Position = UDim2.new(0, 0, 0, 48+174)
-				self.settingsMaxHeight.gui.Position = UDim2.new(0, 0, 0, 72+174)
-				self.settingsMinAngle.gui.Position = UDim2.new(0, 0, 0, 96+174)
-				self.settingsMaxAngle.gui.Position = UDim2.new(0, 0, 0, 120+174)
+				self.settingsMinHeight.gui.Position = UDim2.new(0, 0, 0, 2*24+174)
+				self.settingsMaxHeight.gui.Position = UDim2.new(0, 0, 0, 3*24+174)
+				self.settingsMinAngle.gui.Position = UDim2.new(0, 0, 0, 4*24+174)
+				self.settingsMaxAngle.gui.Position = UDim2.new(0, 0, 0, 5*24+174)
 			else
-				self.gui.Size = UDim2.new(1, -10, 0, 144)
+				self.gui.Size = UDim2.new(1, -10, 0, 6*24)
 
 				self.settingsMinHeight.gui.Position = UDim2.new(0, 0, 0, 24)
 				self.settingsMaxHeight.gui.Position = UDim2.new(0, 0, 0, 48)
