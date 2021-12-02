@@ -3,10 +3,14 @@ local G = require(root.G)
 
 local module = {}
 
+local biomesGroup = nil
+local noisesGroup = nil
+local materialsGroup = nil
+local modelsGroup = nil
+
 
 -- Biomes 
 local biomes = {}
-local biomesGroup = nil
 local selectedBiome = nil
 CreateBiome = function(data)
 	local biome = G.classes["Biome"].New(data)
@@ -49,17 +53,27 @@ SelectBiome = function(biome)
 	UnselectBiome()
 
 	selectedBiome = biome
+	
+	noisesGroup:Unlock()
+	materialsGroup:Unlock()
+	modelsGroup:Unlock()
 end
 UnselectBiome = function()
 	if selectedBiome ~= nil then
 		selectedBiome:Unselect()
 	end
 	selectedBiome = nil
+	
+	noisesGroup:Lock("Select a biome to edit noises...")
+	materialsGroup:Lock("Select a biome to edit materials...")
+	modelsGroup:Lock("Select a biome to edit models...")
 end
+
+
+
 
 -- Noises
 local noises = {}
-local noisesGroup = nil
 CreateNoise = function(data)
 	local noise = G.classes["Noise"].New(data)
 	table.insert(noises, noise)
@@ -102,9 +116,9 @@ end
 
 
 
+
 -- Materials
 local materials = {}
-local materialsGroup = nil
 CreateMaterial = function(data)
 	local material = G.classes["Material"].New(data)
 	table.insert(materials, material)
@@ -147,9 +161,9 @@ end
 
 
 
+
 -- Models
 local models = {}
-local modelsGroup = nil
 CreateModel = function(data)
 	local model = G.classes["Model"].New(data)
 	table.insert(models, model)
@@ -252,6 +266,8 @@ module.Start = function()
 		G.modules["Terrain"].maximumHeight = value
 	end)
 	
+	
+	
 	-- Biomes
 	biomesGroup = G.classes["Group"].New("Biomes")
 	widgetPage:AddChild(biomesGroup.gui)
@@ -268,7 +284,9 @@ module.Start = function()
 		end
 		CreateBiome({percent, active})
 	end)
-		
+	
+	
+	
 	-- Noises
 	noisesGroup = G.classes["Group"].New("Noises")
 	widgetPage:AddChild(noisesGroup.gui)
@@ -279,6 +297,8 @@ module.Start = function()
 		CreateNoise({G.modules["Functions"].Round(math.random(10000, 99999) + math.random(), 3), 50, 0.04, -10, 10, 1})
 	end)
 	
+	
+	
 	-- Materials
 	materialsGroup = G.classes["Group"].New("Materials")
 	widgetPage:AddChild(materialsGroup.gui)
@@ -288,6 +308,8 @@ module.Start = function()
 	materialOption.event:Bind(function()
 		CreateMaterial({1376, -10000, 10000, 0, 10000})
 	end)
+	
+	
 	
 	-- Models
 	modelsGroup = G.classes["Group"].New("Models")
