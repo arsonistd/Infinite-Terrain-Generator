@@ -25,7 +25,7 @@ module.New = function(value)
 	object.gui = Instance.new("Frame")
 	object.gui.Size = UDim2.new(1, 0, 0, 24)-- 184
 	object.gui.Position = UDim2.new(0, 0, 0, 0)
-	object.gui.BackgroundTransparency = 0
+	object.gui.BackgroundTransparency = 1
 
 	local noiseFrame = Instance.new("Frame")
 	noiseFrame.BackgroundTransparency = 1
@@ -86,7 +86,7 @@ module.ToggleSelection = function(self)
 		self.gui.Size = UDim2.new(1, 0, 0, 233)
 
 		self.noisesSelectionFrame = G.classes["Indent"].New({
-			["indent"] = 0.03,
+			["indent"] = 0,
 			["position"] = UDim2.new(1, 0, 0, 24),
 			["parent"] = self.gui,
 			["ySizeOffset"] = 65,
