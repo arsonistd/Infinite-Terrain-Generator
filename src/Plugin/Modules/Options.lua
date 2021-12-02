@@ -7,13 +7,31 @@ local module = {}
 -- Biomes 
 local biomes = {}
 local biomesGroup = nil
+local selectedBiome = nil
 CreateBiome = function(data)
 	local biome = G.classes["Biome"].New(data)
 	biomes[#biomes+1] = biome
 	G.modules["Terrain"].biomes[#G.modules["Terrain"].biomes+1] = biome
-	
+	biomesGroup:AddChild(biome.gui)
 	biome.event:Bind(function(event)
-			
+		local key = nil
+		if event == 1 then
+			if selectedBiome == biome then
+				UnselectBiome()
+			else
+				SelectBiome(biome)
+			end
+		elseif event == 2 then
+			CreateBiome(G.modules["Functions"].Clone(data))
+		elseif event == 3 then
+			biome:Destroy()
+			table.remove(biomes, key)
+			table.remove(G.modules["Terrain"].biomes, key)
+			for i, object in ipairs(biomes) do object.gui.LayoutOrder = i end
+		end
+	end)
+	if data[2] == true then
+		SelectBiome(biome)
 	end
 	
 	return biome
@@ -25,8 +43,19 @@ ClearBiomes = function()
 	biomes = {}
 	G.modules["Terrain"].biomes = {}
 end
+SelectBiome = function(biome)
+	--print(selectedBiome)
+	if selectedBiome == biome then print("yo") return end
+	UnselectBiome()
 
-
+	selectedBiome = biome
+end
+UnselectBiome = function()
+	if selectedBiome ~= nil then
+		selectedBiome:Unselect()
+	end
+	selectedBiome = nil
+end
 
 -- Noises
 local noises = {}
@@ -224,13 +253,20 @@ module.Start = function()
 	end)
 	
 	-- Biomes
-	biomesGroup = G.classes["Group"].New("Noises")
+	biomesGroup = G.classes["Group"].New("Biomes")
 	widgetPage:AddChild(biomesGroup.gui)
-	local biomeOption = = G.classes["Button"].New("Add Biome")
+	local biomeOption = G.classes["Button"].New("Add Biome")
 	biomeOption.gui.LayoutOrder = 2147483647
 	biomesGroup:AddChild(biomeOption.gui)
 	biomeOption.event:Bind(function()
-				
+		local percent = 100
+		local active = false
+		if #biomes == 0 then
+			active = true --if this is the first biome then auto select it
+		else
+			percent = percent/(#biomes+1)
+		end
+		CreateBiome({percent, active})
 	end)
 		
 	-- Noises
@@ -272,6 +308,7 @@ module.Start = function()
 		local selection = game.Selection:Get()[1]
 		if selection == nil then return end
 		local formatedData = G.classes["format"].toModule(selection)
+		formatedData.Parent = selection
 	end)
 		
 	local loadOption = G.classes["Button"].New("Load")
