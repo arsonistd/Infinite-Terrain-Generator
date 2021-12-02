@@ -146,9 +146,22 @@ module.ToggleBiomeParameters = function(self)
 	if self.settingsOpen == true then
 		self.settingsOpen = false
 		self.gui.Size = UDim2.new(1, 0, 0, 24)
+		self.settingsIndent:Destroy()
 	else
 		self.settingsOpen = true
 		self.gui.Size = UDim2.new(1, 0, 0, 48)
+		self.settingsIndent = G.classes["Indent"].New({
+			["indent"] = 0.03,
+			["position"] = UDim2.new(1, 0, 0, 24),
+			["parent"] = object.indent
+		})
+		self.SettingsCompositionTextBox = G.Classes[Number].New("Composition", self.data[1])
+		self.SettingsCompositionTextBox.gui.Parent = self.settingsIndent.gui
+		self.SettingsCompositionTextBox.event:Bind(function(value)
+			self.data[1] = tonumber(value) or self.data[1]
+			self.SettingsCompositionTextBox:Set(self.data[1])
+			self.CompositionTextBox.Text = self.data[1]
+		end)
 	end
 end
 
