@@ -1,3 +1,6 @@
+local root = script.Parent.Parent
+local G = require(root.G)
+
 local module = {}
 
 module.toModule = function(selection)
