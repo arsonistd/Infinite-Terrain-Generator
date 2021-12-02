@@ -103,7 +103,7 @@ module.ToggleSelection = function(self)
 		self.materialFrame.LayoutOrder = 2]]
 
 		self.materialFrame = G.classes["Indent"].New({
-			["indent"] = 0.03,
+			["indent"] = 0,
 			["position"] = UDim2.new(1, 0, 0, 24),
 			["parent"] = self.gui,
 			["ySizeOffset"] = 184,
@@ -111,8 +111,8 @@ module.ToggleSelection = function(self)
 			["backgroundColor3"] = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Dropdown),
 			["borderColor3"] = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border),
 			["borderSizePixel"] = 1,
-			["backgroundTransparency"] = 0,
-			["xSizeScale"] = 1
+			["xSizeScale"] = 1,
+			["backgroundTransparency"] = 0
 		})
 		
 		local materialPadding = Instance.new("UIPadding")
