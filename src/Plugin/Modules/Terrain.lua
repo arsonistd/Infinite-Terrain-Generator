@@ -15,6 +15,7 @@ module.materialData = {}
 module.generateData = {}
 module.distance = 6
 module.thickness = thickness
+module.biomes = {}
 module.noises = {}
 module.materials = {}
 module.models = {}
