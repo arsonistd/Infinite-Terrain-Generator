@@ -101,7 +101,7 @@ module.New = function(data)
 
 	object.CompositionTextBox = Instance.new("TextBox")
 	object.CompositionTextBox.Position = UDim2.new(0.18, 0, 0, 0)
-	object.CompositionTextBox.Size = UDim2.new(1-0.28, 0, 1, 0)
+	object.CompositionTextBox.Size = UDim2.new((1-0.28)/2, 0, 1, 0)
 	object.CompositionTextBox.Text = data[1]
 	object.CompositionTextBox.Parent = object.indent.gui
 	object.CompositionTextBox.ClearTextOnFocus = false
@@ -121,6 +121,30 @@ module.New = function(data)
 	object.CompositionTextBox.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
 		data[1] = tonumber(object.CompositionTextBox.Text) or data[1]
 		object.CompositionTextBox.Text = data[1]
+	end)
+	
+	object.ScaleTextBox = Instance.new("TextBox")
+	object.ScaleTextBox.Position = UDim2.new(0.18+((1-0.28)/2), 0, 0, 0)
+	object.ScaleTextBox.Size = UDim2.new((1-0.28)/2, 0, 1, 0)
+	object.ScaleTextBox.Text = data[1]
+	object.ScaleTextBox.Parent = object.indent.gui
+	object.ScaleTextBox.ClearTextOnFocus = false
+	object.ScaleTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
+	object.ScaleTextBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	object.ScaleTextBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
+	object.ScaleTextBox.MouseEnter:Connect(function()
+		object.ScaleTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Hover)
+		object.ScaleTextBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Hover)
+		object.ScaleTextBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
+	end)
+	object.ScaleTextBox.MouseLeave:Connect(function()
+		object.ScaleTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Default)
+		object.ScaleTextBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Default)
+		object.ScaleTextBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Default)
+	end)
+	object.ScaleTextBox.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
+		data[3] = tonumber(object.ScaleTextBox.Text) or data[3]
+		object.ScaleTextBox.Text = data[3]
 	end)
 	
 	return object
@@ -149,7 +173,7 @@ module.ToggleBiomeParameters = function(self)
 		self.settingsIndent:Destroy()
 	else
 		self.settingsOpen = true
-		self.gui.Size = UDim2.new(1, 0, 0, 48)
+		self.gui.Size = UDim2.new(1, 0, 0, 24*3)
 		self.settingsIndent = G.classes["Indent"].New({
 			["indent"] = 0.03,
 			["position"] = UDim2.new(1, 0, 0, 24),
@@ -161,6 +185,14 @@ module.ToggleBiomeParameters = function(self)
 			self.data[1] = tonumber(value) or self.data[1]
 			self.SettingsCompositionTextBox:Set(self.data[1])
 			self.CompositionTextBox.Text = self.data[1]
+		end)
+		self.SettingsScaleTextBox = G.Classes[Number].New("Composition", self.data[3])
+		self.SettingsScaleTextBox.gui.Position = UDim2.new(0, 0, 0, 24)
+		self.SettingsScaleTextBox.gui.Parent = self.settingsIndent.gui
+		self.SettingsScaleTextBox.event:Bind(function(value)
+			self.data[3] = tonumber(value) or self.data[3]
+			self.SettingsScaleTextBox:Set(self.data[3])
+			self.ScaleTextBox.Text = self.data[3]
 		end)
 	end
 end
