@@ -124,9 +124,9 @@ module.New = function(data)
 	end)
 	
 	object.ScaleTextBox = Instance.new("TextBox")
-	object.ScaleTextBox.Position = UDim2.new(0.18+((1-0.28)/2), 0, 0, 0)
-	object.ScaleTextBox.Size = UDim2.new((1-0.28)/2, 0, 1, 0)
-	object.ScaleTextBox.Text = data[1]
+	object.ScaleTextBox.Position = UDim2.new(0.18+((1-0.28)/3), 0, 0, 0)
+	object.ScaleTextBox.Size = UDim2.new((1-0.28)/3, 0, 1, 0)
+	object.ScaleTextBox.Text = data[3]
 	object.ScaleTextBox.Parent = object.indent.gui
 	object.ScaleTextBox.ClearTextOnFocus = false
 	object.ScaleTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
@@ -145,6 +145,66 @@ module.New = function(data)
 	object.ScaleTextBox.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
 		data[3] = tonumber(object.ScaleTextBox.Text) or data[3]
 		object.ScaleTextBox.Text = data[3]
+	end)
+	
+	object.SeedTextBox = Instance.new("TextBox")
+	object.SeedTextBox.Position = UDim2.new(0.18+(((1-0.28)/3)*2), 0, 0, 0)
+	object.SeedTextBox.Size = UDim2.new((1-0.28)/3, 0, 1, 0)
+	object.SeedTextBox.Text = data[4]
+	object.SeedTextBox.Parent = object.indent.gui
+	object.SeedTextBox.ClearTextOnFocus = false
+	object.SeedTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item)
+	object.SeedTextBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	object.SeedTextBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
+	object.SeedTextBox.MouseEnter:Connect(function()
+		object.SeedTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Hover)
+		object.SeedTextBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Hover)
+		object.SeedTextBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Hover)
+	end)
+	object.SeedTextBox.MouseLeave:Connect(function()
+		object.SeedTextBox.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Item, Enum.StudioStyleGuideModifier.Default)
+		object.SeedTextBox.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Default)
+		object.SeedTextBox.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText, Enum.StudioStyleGuideModifier.Default)
+	end)
+	object.SeedTextBox.FocusLost:Connect(function(enterPressed, inputThatCausedFocusLoss)
+		data[4] = tonumber(object.SeedTextBox.Text) or data[4]
+		object.SeedTextBox.Text = data[4]
+	end)
+	local generateSeedButton = Instance.new("TextButton")
+	generateSeedButton.Text = "Generate"
+	generateSeedButton.Font = Enum.Font.Arial
+	generateSeedButton.TextSize = 12
+	generateSeedButton.Position = UDim2.new(1, -4, 0.5, 0)
+	generateSeedButton.AnchorPoint = Vector2.new(1, 0.5)
+	generateSeedButton.Size = UDim2.new(0, 55, 1, -6)
+	generateSeedButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button)
+	generateSeedButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	generateSeedButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ButtonText)
+	generateSeedButton.Parent = self.SettingsSeedTextBox.gui
+	generateSeedButton.MouseEnter:Connect(function()
+		generateSeedButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, Enum.StudioStyleGuideModifier.Hover)
+		generateSeedButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Hover)
+		generateSeedButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ButtonText, Enum.StudioStyleGuideModifier.Hover)
+	end)
+	generateSeedButton.MouseLeave:Connect(function()
+		generateSeedButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, Enum.StudioStyleGuideModifier.Default)
+		generateSeedButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Default)
+		generateSeedButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ButtonText, Enum.StudioStyleGuideModifier.Default)
+	end)
+	generateSeedButton.MouseButton1Up:Connect(function()
+		generateSeedButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, Enum.StudioStyleGuideModifier.Pressed)
+		generateSeedButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Pressed)
+		generateSeedButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ButtonText, Enum.StudioStyleGuideModifier.Pressed)
+	end)
+	generateSeedButton.MouseButton1Down:Connect(function()
+		generateSeedButton.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, Enum.StudioStyleGuideModifier.Default)
+		generateSeedButton.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, Enum.StudioStyleGuideModifier.Default)
+		generateSeedButton.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ButtonText, Enum.StudioStyleGuideModifier.Default)
+	end)
+	generateSeedButton.Activated:Connect(function()
+		self.data[4] = G.modules["Functions"].Round(math.random(10000, 99999) + math.random(), 3)
+		self.SettingsSeedTextBox:Set(self.data[4])
+		self.SeedTextBox.Text = self.data[4]
 	end)
 	
 	return object
@@ -169,11 +229,13 @@ end
 module.ToggleBiomeParameters = function(self)
 	if self.settingsOpen == true then
 		self.settingsOpen = false
+		self.collapseButton.Image = "rbxassetid://8057404440"
 		self.gui.Size = UDim2.new(1, 0, 0, 24)
 		self.settingsIndent:Destroy()
 	else
 		self.settingsOpen = true
-		self.gui.Size = UDim2.new(1, 0, 0, 24*3)
+		self.collapseButton.Image = "rbxassetid://8057404581"
+		self.gui.Size = UDim2.new(1, 0, 0, 24*4)
 		self.settingsIndent = G.classes["Indent"].New({
 			["indent"] = 0.03,
 			["position"] = UDim2.new(1, 0, 0, 24),
@@ -193,6 +255,14 @@ module.ToggleBiomeParameters = function(self)
 			self.data[3] = tonumber(value) or self.data[3]
 			self.SettingsScaleTextBox:Set(self.data[3])
 			self.ScaleTextBox.Text = self.data[3]
+		end)
+		self.SettingsSeedTextBox = G.Classes[Number].New("Composition", self.data[3])
+		self.SettingsSeedTextBox.gui.Position = UDim2.new(0, 0, 0, 24)
+		self.SettingsSeedTextBox.gui.Parent = self.settingsIndent.gui
+		self.SettingsSeedTextBox.event:Bind(function(value)
+			self.data[4] = tonumber(value) or self.data[4]
+			self.SettingsSeedTextBox:Set(self.data[4])
+			self.SeedTextBox.Text = self.data[4]
 		end)
 	end
 end
