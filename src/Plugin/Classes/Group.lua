@@ -112,8 +112,9 @@ end
 
 local listConnection = nil
 module.Lock = function(self, reason)
+	print("locked")
 	self.LockedGuiObjects = {}
-	for i, v in pairs(self.frame:GetDecendants()) do
+	for i, v in pairs(self.frame:GetDescendants()) do
 		if v:IsA("TextBox") or v:IsA("ImageButton") or v:IsA("TextButton") then
 			if v.Active == true then
 				v.Active = false
@@ -135,6 +136,7 @@ module.Lock = function(self, reason)
 end
 
 module.Unlock = function(self, reason)
+	print("unlocked")
 	for i,v in pairs(self.LockedGuiObjects) do
 		v.Active = true
 	end
