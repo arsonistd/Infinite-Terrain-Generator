@@ -50,7 +50,7 @@ end
 SelectBiome = function(biome)
 	--print(selectedBiome)
 	if selectedBiome == biome then print("yo") return end
-	UnselectBiome()
+	UnselectBiome(true)
 
 	selectedBiome = biome
 	
@@ -58,15 +58,17 @@ SelectBiome = function(biome)
 	materialsGroup:Unlock()
 	modelsGroup:Unlock()
 end
-UnselectBiome = function()
+UnselectBiome = function(dontLockGroups)
 	if selectedBiome ~= nil then
 		selectedBiome:Unselect()
 	end
 	selectedBiome = nil
 	
-	noisesGroup:Lock("Select a biome to edit noises...")
-	materialsGroup:Lock("Select a biome to edit materials...")
-	modelsGroup:Lock("Select a biome to edit models...")
+	if dontLockGroups then
+		noisesGroup:Lock("Select a biome to edit noises...")
+		materialsGroup:Lock("Select a biome to edit materials...")
+		modelsGroup:Lock("Select a biome to edit models...")
+	end
 end
 
 
@@ -277,12 +279,14 @@ module.Start = function()
 	biomeOption.event:Bind(function()
 		local percent = 100
 		local active = false
+		local scale = 1
+		local seed = G.modules["Functions"].Round(math.random(10000, 99999) + math.random(), 3)
 		if #biomes == 0 then
 			active = true --if this is the first biome then auto select it
 		else
 			percent = percent/(#biomes+1)
 		end
-		CreateBiome({percent, active})
+		CreateBiome({percent, active, scale, seed})
 	end)
 	
 	
